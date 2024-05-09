@@ -11,10 +11,11 @@ public class Main extends JFrame {
         setExtendedState(MAXIMIZED_BOTH);
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
+        Main main = this;
         addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
-                panel = new Panel(getWidth(), getHeight());
+                panel = new Panel(main, getWidth(), getHeight());
                 add(panel);
             }
 

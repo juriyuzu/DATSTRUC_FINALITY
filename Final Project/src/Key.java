@@ -8,10 +8,10 @@ public class Key {
 
     Key(JFrame frame) {
         String[] keys = {
-                "UP",
-                "DOWN",
-                "LEFT",
-                "RIGHT"
+                "W",
+                "S",
+                "A",
+                "D"
         };
 
         key = new HashMap<>();
@@ -24,16 +24,21 @@ public class Key {
             @Override
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
-                    case KeyEvent.VK_UP -> System.out.println("UP");
-                    case KeyEvent.VK_DOWN -> System.out.println("DOWN");
-                    case KeyEvent.VK_LEFT -> System.out.println("LEFT");
-                    case KeyEvent.VK_RIGHT -> System.out.println("RIGHT");
+                    case KeyEvent.VK_W -> key.put("W", true);
+                    case KeyEvent.VK_S -> key.put("S", true);
+                    case KeyEvent.VK_A -> key.put("A", true);
+                    case KeyEvent.VK_D -> key.put("D", true);
                 }
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
-
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_W -> key.put("W", false);
+                    case KeyEvent.VK_S -> key.put("S", false);
+                    case KeyEvent.VK_A -> key.put("A", false);
+                    case KeyEvent.VK_D -> key.put("D", false);
+                }
             }
         });
     }
