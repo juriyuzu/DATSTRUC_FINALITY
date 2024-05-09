@@ -5,6 +5,7 @@ public class Main extends JFrame {
 
     Main() {
         setUndecorated(true);
+        System.out.println("tite");
         setExtendedState(MAXIMIZED_BOTH);
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setVisible(true);
