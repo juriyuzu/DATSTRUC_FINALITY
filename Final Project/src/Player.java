@@ -58,15 +58,23 @@ public class Player extends Tile {
             }
         }
 
-        double px = x, py = y;
-        gotoxy(x + xVel, y + yVel);
-
+        boolean xF = true, yF = true;
+        gotoxy(x + xVel, y);
         for (Tile tile : panel.tiles) {
             if (tile.solid && rectRect(tile.x - (float) tile.size/2, tile.y - (float) tile.size/2, tile.size, tile.size)) {
-                gotoxy(px, py);
+                xF = false;
                 break;
             }
         }
+        gotoxy(x - xVel, y + yVel);
+        for (Tile tile : panel.tiles) {
+            if (tile.solid && rectRect(tile.x - (float) tile.size/2, tile.y - (float) tile.size/2, tile.size, tile.size)) {
+                yF = false;
+                break;
+            }
+        }
+        if (xF) gotoxy(x + xVel, y);
+        if (!yF) gotoxy(x, y - yVel);
     }
 
     boolean rectRect(float r1x, float r1y, float r1w, float r1h) {
