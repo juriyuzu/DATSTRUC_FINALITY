@@ -10,8 +10,9 @@ public class Panel extends JPanel implements Runnable {
     int width, height;
     Key key;
     Player player;
+    Save save;
     int fpsCounter, fps;
-    HashMap<String, Tile> tiles;
+    LinkedList<Tile> tiles;
     LinkedList<Tile> layer;
 
     Panel(Main main, int width, int height) {
@@ -25,6 +26,7 @@ public class Panel extends JPanel implements Runnable {
         tileSize = 50;
         key = new Key(main);
         player = new Player(this);
+        save = new Save();
 
         fpsCounter = 0;
         Timer timer = new Timer(1000, e -> {
@@ -35,9 +37,14 @@ public class Panel extends JPanel implements Runnable {
 
         layer = new LinkedList<>();
 
-        tiles = new HashMap<>();
-        tiles.put("test", new Tile(this, 100, 0, true));
-        tiles.put("test1", new Tile(this, 100, 150, true));
+        tiles = new LinkedList<>();
+        // sample map
+        {
+            LinkedList<String> sampleMap = new LinkedList<>(save.read("Final Project/save/sampleMap.txt"));
+            for (int j = 0; j < sampleMap.size(); j++)
+                for (int i = 0; i < sampleMap.get(j).length(); i++)
+                    if (sampleMap.get(j).charAt(i) == '0') tiles.add(new Tile(this, i * 50, j * 50, true));
+        }
     }
 
     public void run() {
@@ -79,7 +86,7 @@ public class Panel extends JPanel implements Runnable {
         layer.clear();
 
         layer.add(player);
-        for (HashMap.Entry<String, Tile> entry : tiles.entrySet()) layer.add(entry.getValue());
+        layer.addAll(tiles);
 
         layer.sort(Comparator.comparingInt(Tile::getY));
     }

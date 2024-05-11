@@ -12,8 +12,8 @@ public class Player extends Tile {
         key = panel.key;
         camX = -panel.width/2;
         camY = -panel.height/2;
-        x = 0;
-        y = 0;
+        x = 50;
+        y = 50;
         size = (int) (panel.tileSize * 0.7);
     }
 
@@ -61,8 +61,7 @@ public class Player extends Tile {
         double px = x, py = y;
         gotoxy(x + xVel, y + yVel);
 
-        for (HashMap.Entry<String, Tile> entry : panel.tiles.entrySet()) {
-            Tile tile = entry.getValue();
+        for (Tile tile : panel.tiles) {
             if (tile.solid && rectRect(tile.x - (float) tile.size/2, tile.y - (float) tile.size/2, tile.size, tile.size)) {
                 gotoxy(px, py);
                 break;
