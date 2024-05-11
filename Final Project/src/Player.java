@@ -1,30 +1,40 @@
 import java.awt.*;
+import java.util.HashMap;
 
-public class Player {
-    Panel panel;
+public class Player extends Tile {
     private final Key key;
-    private int camX, camY, x, y, size;
+    private int camX, camY;
 
     Player(Panel panel) {
+        super(panel, 0, 0, true);
+
         this.panel = panel;
         key = panel.key;
         camX = -panel.width/2;
         camY = -panel.height/2;
         x = 0;
         y = 0;
-        size = panel.tileSize;
+        size = (int) (panel.tileSize * 0.7);
     }
 
     public void draw(Graphics2D gg) {
+        gg.setColor(new Color(0xAD0000));
+        gg.fillRect(x - size/2 - camX, y - size*3/2 - camY, size, size*2);
         gg.setColor(new Color(0xFF0000));
         gg.fillRect(x - size/2 - camX, y - size/2 - camY, size, size);
 
         move();
+        gotoxyCam(x - (double) panel.width /2, y - (double) panel.height /2);
     }
 
     public void gotoxy(double x, double y) {
         this.x = (int) x;
         this.y = (int) y;
+    }
+
+    public void gotoxyCam(double x, double y) {
+        this.camX = (int) x;
+        this.camY = (int) y;
     }
 
     public int getXYCam(boolean getX) {
@@ -48,6 +58,23 @@ public class Player {
             }
         }
 
+        double px = x, py = y;
         gotoxy(x + xVel, y + yVel);
+
+        for (HashMap.Entry<String, Tile> entry : panel.tiles.entrySet()) {
+            Tile tile = entry.getValue();
+            if (tile.solid && rectRect(tile.x - (float) tile.size/2, tile.y - (float) tile.size/2, tile.size, tile.size)) {
+                gotoxy(px, py);
+                break;
+            }
+        }
+    }
+
+    boolean rectRect(float r1x, float r1y, float r1w, float r1h) {
+        float r2x = x - (float) size/2, r2y = y - (float) size/2, r2w = size, r2h = size;
+        return r1x + r1w >= r2x &&
+                r1x <= r2x + r2w &&
+                r1y + r1h >= r2y &&
+                r1y <= r2y + r2h;
     }
 }

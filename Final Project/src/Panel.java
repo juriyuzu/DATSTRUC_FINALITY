@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class Panel extends JPanel implements Runnable {
     Thread thread;
@@ -10,6 +12,7 @@ public class Panel extends JPanel implements Runnable {
     Player player;
     int fpsCounter, fps;
     HashMap<String, Tile> tiles;
+    LinkedList<Tile> layer;
 
     Panel(Main main, int width, int height) {
         this.width = width;
@@ -30,8 +33,11 @@ public class Panel extends JPanel implements Runnable {
         });
         timer.start();
 
+        layer = new LinkedList<>();
+
         tiles = new HashMap<>();
-        tiles.put("test", new Tile(this, 50, 50));
+        tiles.put("test", new Tile(this, 100, 0, true));
+        tiles.put("test1", new Tile(this, 100, 150, true));
     }
 
     public void run() {
@@ -59,9 +65,8 @@ public class Panel extends JPanel implements Runnable {
         gg.setColor(new Color(0xA1A1A1));
         gg.fillRect(0, 0, width, height);
 
-        for (HashMap.Entry<String, Tile> entry : tiles.entrySet()) entry.getValue().draw(gg);
-
-        player.draw(gg);
+        layerFun();
+        for (Tile tile : layer) tile.draw(gg);
 
         gg.setFont(new Font("Consolas", Font.BOLD, 15));
         gg.setColor(new Color(0x000000));
@@ -70,7 +75,12 @@ public class Panel extends JPanel implements Runnable {
         gg.dispose();
     }
 
-    public int tilePos(int n) {
-        return n * tileSize;
+    private void layerFun() {
+        layer.clear();
+
+        layer.add(player);
+        for (HashMap.Entry<String, Tile> entry : tiles.entrySet()) layer.add(entry.getValue());
+
+        layer.sort(Comparator.comparingInt(Tile::getY));
     }
 }
