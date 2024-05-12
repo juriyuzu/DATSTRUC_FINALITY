@@ -11,7 +11,8 @@ public class Key {
                 "W",
                 "S",
                 "A",
-                "D"
+                "D",
+                "SHIFT",
         };
 
         key = new HashMap<>();
@@ -28,6 +29,7 @@ public class Key {
                     case KeyEvent.VK_S -> key.put("S", true);
                     case KeyEvent.VK_A -> key.put("A", true);
                     case KeyEvent.VK_D -> key.put("D", true);
+                    case KeyEvent.VK_SHIFT -> key.put("SHIFT", true);
                 }
             }
 
@@ -38,6 +40,7 @@ public class Key {
                     case KeyEvent.VK_S -> key.put("S", false);
                     case KeyEvent.VK_A -> key.put("A", false);
                     case KeyEvent.VK_D -> key.put("D", false);
+                    case KeyEvent.VK_SHIFT -> key.put("SHIFT", false);
                 }
             }
         });

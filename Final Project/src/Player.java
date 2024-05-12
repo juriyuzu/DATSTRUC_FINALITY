@@ -4,9 +4,10 @@ import java.util.HashMap;
 public class Player extends Tile {
     private final Key key;
     private int camX, camY;
+    public double stamina = 1000;
 
     Player(Panel panel) {
-        super(panel, 0, 0, true);
+        super(panel, 0, 0, TileType.PLAYER);
 
         this.panel = panel;
         key = panel.key;
@@ -23,8 +24,10 @@ public class Player extends Tile {
         gg.setColor(new Color(0xFF0000));
         gg.fillRect(x - size/2 - camX, y - size/2 - camY, size, size);
 
-        move();
+        move(gg);
         gotoxyCam(x - (double) panel.width /2, y - (double) panel.height /2);
+
+        if (rectRect(panel.chaser.x, panel.chaser.y, panel.chaser.size, panel.chaser.size)) System.exit(0);
     }
 
     public void gotoxy(double x, double y) {
@@ -41,8 +44,13 @@ public class Player extends Tile {
         return getX ? camX : camY;
     }
 
-    private void move() {
-        float speed = 5;
+    private void move(Graphics2D gg) {
+        int speed = 5;
+        if (key.key.get("SHIFT") && stamina > 0) {
+            speed = 8;
+            stamina--;
+        }
+        else stamina = Math.min(1000, stamina + 0.5);
         int xVel = 0;
         int yVel = 0;
 
@@ -60,15 +68,15 @@ public class Player extends Tile {
 
         boolean xF = true, yF = true;
         gotoxy(x + xVel, y);
-        for (Tile tile : panel.tiles) {
-            if (tile.solid && rectRect(tile.x - (float) tile.size/2, tile.y - (float) tile.size/2, tile.size, tile.size)) {
+        for (Tile tile : panel.tiles.get("PLAYGROUND")) {
+            if (tile != this && tile.solid && rectRect(tile.x - (float) tile.size/2, tile.y - (float) tile.size/2, tile.size, tile.size)) {
                 xF = false;
                 break;
             }
         }
         gotoxy(x - xVel, y + yVel);
-        for (Tile tile : panel.tiles) {
-            if (tile.solid && rectRect(tile.x - (float) tile.size/2, tile.y - (float) tile.size/2, tile.size, tile.size)) {
+        for (Tile tile : panel.tiles.get("PLAYGROUND")) {
+            if (tile != this && tile.solid && rectRect(tile.x - (float) tile.size/2, tile.y - (float) tile.size/2, tile.size, tile.size)) {
                 yF = false;
                 break;
             }

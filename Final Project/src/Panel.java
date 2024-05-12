@@ -3,6 +3,7 @@ import java.awt.*;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Random;
 
 public class Panel extends JPanel implements Runnable {
     Thread thread;
@@ -12,8 +13,10 @@ public class Panel extends JPanel implements Runnable {
     Player player;
     Save save;
     int fpsCounter, fps;
-    LinkedList<Tile> tiles;
+    HashMap<String, LinkedList<Tile>> tiles;
     LinkedList<Tile> layer;
+    Chaser chaser;
+    Random random;
 
     Panel(Main main, int width, int height) {
         this.width = width;
@@ -25,8 +28,15 @@ public class Panel extends JPanel implements Runnable {
 
         tileSize = 50;
         key = new Key(main);
-        player = new Player(this);
         save = new Save();
+        random = new Random();
+
+        tiles = new HashMap<>();
+        tiles.put("BACKGROUND", new LinkedList<>());
+        tiles.put("PLAYGROUND", new LinkedList<>());
+
+        player = new Player(this);
+        tiles.get("PLAYGROUND").add(player);
 
         fpsCounter = 0;
         Timer timer = new Timer(1000, e -> {
@@ -37,14 +47,19 @@ public class Panel extends JPanel implements Runnable {
 
         layer = new LinkedList<>();
 
-        tiles = new LinkedList<>();
         // sample map
         {
             LinkedList<String> sampleMap = new LinkedList<>(save.read("Final Project/save/sampleMap.txt"));
             for (int j = 0; j < sampleMap.size(); j++)
-                for (int i = 0; i < sampleMap.get(j).length(); i++)
-                    if (sampleMap.get(j).charAt(i) == '0') tiles.add(new Tile(this, i * 50, j * 50, true));
+                for (int i = 0; i < sampleMap.get(j).length(); i++) {
+                    switch (sampleMap.get(j).charAt(i)) {
+                        case '0' -> tiles.get("PLAYGROUND").add(new Tile(this, i * 50, j * 50, TileType.WALL));
+                        case '.' -> tiles.get("BACKGROUND").add(new Tile(this, i * 50, j * 50, TileType.FLOOR));
+            }}
         }
+
+        chaser = new Chaser(this, 18 * 50, 20 * 50);
+        tiles.get("PLAYGROUND").add(chaser);
     }
 
     public void run() {
@@ -72,22 +87,33 @@ public class Panel extends JPanel implements Runnable {
         gg.setColor(new Color(0xA1A1A1));
         gg.fillRect(0, 0, width, height);
 
-        layerFun();
-        for (Tile tile : layer) tile.draw(gg);
+        layerFun(gg);
 
         gg.setFont(new Font("Consolas", Font.BOLD, 15));
         gg.setColor(new Color(0x000000));
-        gg.drawString(width + " " + height + " " + fps + " " + fpsCounter, width/2, height/2);
+        gg.drawString(width + " " + height + " " + fps + " " + fpsCounter + " " + player.x + " " + player.y + " Stamina: " + (int) player.stamina, width/2, height/2);
 
         gg.dispose();
     }
 
-    private void layerFun() {
+    private void layerFun(Graphics2D gg) {
         layer.clear();
-
-        layer.add(player);
-        layer.addAll(tiles);
-
+        layer.addAll(tiles.get("BACKGROUND"));
         layer.sort(Comparator.comparingInt(Tile::getY));
+        for (Tile tile : layer) tile.draw(gg);
+
+        layer.clear();
+        layer.addAll(tiles.get("PLAYGROUND"));
+        layer.sort(Comparator.comparingInt(Tile::getY));
+        for (Tile tile : layer) tile.draw(gg);
+    }
+
+    public Tile getTileAt(int x, int y) {
+        for (Tile tile : tiles.get("BACKGROUND")) {
+            if (tile.x == x && tile.y == y) {
+                return tile;
+            }
+        }
+        return null; // Return null if no tile is found at the specified coordinates
     }
 }
