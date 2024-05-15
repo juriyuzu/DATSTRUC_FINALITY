@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -10,13 +12,14 @@ public class Panel extends JPanel implements Runnable {
     int tileSize;
     int width, height;
     Key key;
-    Player player;
     Save save;
     int fpsCounter, fps;
     HashMap<String, LinkedList<Tile>> tiles;
     LinkedList<Tile> layer;
-    Chaser chaser;
     Random random;
+    Player player;
+    MainMenu mainMenu;
+    int curX, curY;
 
     Panel(Main main, int width, int height) {
         this.width = width;
@@ -31,13 +34,6 @@ public class Panel extends JPanel implements Runnable {
         save = new Save();
         random = new Random();
 
-        tiles = new HashMap<>();
-        tiles.put("BACKGROUND", new LinkedList<>());
-        tiles.put("PLAYGROUND", new LinkedList<>());
-
-        player = new Player(this);
-        tiles.get("PLAYGROUND").add(player);
-
         fpsCounter = 0;
         Timer timer = new Timer(1000, e -> {
             fps = fpsCounter;
@@ -45,21 +41,21 @@ public class Panel extends JPanel implements Runnable {
         });
         timer.start();
 
-        layer = new LinkedList<>();
+        mainMenu = new MainMenu(this);
 
-        // sample map
-        {
-            LinkedList<String> sampleMap = new LinkedList<>(save.read("Final Project/save/sampleMap.txt"));
-            for (int j = 0; j < sampleMap.size(); j++)
-                for (int i = 0; i < sampleMap.get(j).length(); i++) {
-                    switch (sampleMap.get(j).charAt(i)) {
-                        case '0' -> tiles.get("PLAYGROUND").add(new Tile(this, i * 50, j * 50, TileType.WALL));
-                        case '.' -> tiles.get("BACKGROUND").add(new Tile(this, i * 50, j * 50, TileType.FLOOR));
-            }}
-        }
+        addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                curX = e.getX();
+                curY = e.getY();
+            }
 
-        chaser = new Chaser(this, 18 * 50, 20 * 50);
-        tiles.get("PLAYGROUND").add(chaser);
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                curX = e.getX();
+                curY = e.getY();
+            }
+        });
     }
 
     public void run() {
@@ -84,14 +80,20 @@ public class Panel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D gg = (Graphics2D) g;
 
+        // backdrop
         gg.setColor(new Color(0xA1A1A1));
         gg.fillRect(0, 0, width, height);
 
-        layerFun(gg);
+        mainMenu.draw(gg);
 
-        gg.setFont(new Font("Consolas", Font.BOLD, 15));
-        gg.setColor(new Color(0x000000));
-        gg.drawString(width + " " + height + " " + fps + " " + fpsCounter + " " + player.x + " " + player.y + " Stamina: " + (int) player.stamina, width/2, height/2);
+        // debug
+        {
+            gg.setFont(new Font("Consolas", Font.BOLD, 15));
+            gg.setColor(new Color(0x000000));
+            gg.drawString(width + " " + height + " " + fps + " " + fpsCounter, width / 2, height / 2);
+            gg.drawString(curX + " " + curY, width / 2, height / 2 + 15);
+            gg.drawString(key.key.get("W") + " " + key.key.get("S"), width / 2, height / 2 + 30);
+        }
 
         gg.dispose();
     }

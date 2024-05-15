@@ -26,8 +26,7 @@ public class Player extends Tile {
 
         move(gg);
         gotoxyCam(x - (double) panel.width /2, y - (double) panel.height /2);
-
-        if (rectRect((float) (panel.chaser.x - (float) panel.chaser.size /1.5), (float) (panel.chaser.y - (float) panel.chaser.size /1.5), panel.chaser.size, panel.chaser.size)) System.exit(0);    }
+    }
 
     public void gotoxy(double x, double y) {
         this.x = (int) x;

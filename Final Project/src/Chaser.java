@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class Chaser extends Tile {
     int[][] grid;
-    private static final int radius = 30;
+    private static final int radius = 10;
     private int px, py, lastPx, lastPy;
     private List<Node> path;
 

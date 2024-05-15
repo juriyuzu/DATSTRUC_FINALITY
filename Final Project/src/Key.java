@@ -1,12 +1,11 @@
 import javax.swing.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.util.HashMap;
 
 public class Key {
     HashMap<String, Boolean> key;
 
-    Key(JFrame frame) {
+    Key(Main main) {
         String[] keys = {
                 "W",
                 "S",
@@ -18,7 +17,7 @@ public class Key {
         key = new HashMap<>();
         for (String s : keys) key.put(s, false);
 
-        frame.addKeyListener(new KeyListener() {
+        main.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {}
 
