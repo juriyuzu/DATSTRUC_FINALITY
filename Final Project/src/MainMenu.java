@@ -5,10 +5,12 @@ import java.awt.event.MouseListener;
 import java.util.HashMap;
 
 public class MainMenu {
+    boolean visible = true;
     Panel panel;
     HashMap<String, Object> objects;
     HashMap<String, Image> imageStock;
     boolean click, press;
+    int pressX, pressY;
 
     MainMenu(Panel panel) {
         this.panel = panel;
@@ -29,6 +31,8 @@ public class MainMenu {
             @Override
             public void mousePressed(MouseEvent e) {
                 press = true;
+                pressX = e.getX();
+                pressY = e.getY();
             }
 
             @Override
@@ -47,6 +51,8 @@ public class MainMenu {
     }
 
     public void draw(Graphics2D gg) {
+        if (!visible) return;
+
         for (HashMap.Entry<String, Object> entry : objects.entrySet()) entry.getValue().draw(gg);
 
         pressFun(gg);
@@ -56,7 +62,7 @@ public class MainMenu {
     private void pressFun(Graphics2D gg) {
         gg.setColor(new Color(0x000000));
         gg.drawString(String.valueOf(press), 100, 100);
-        if (cursorHovering(objects.get("START BUTTON")) && press) {
+        if (hovering(objects.get("START BUTTON"), panel.curX, panel.curY) && press && hovering(objects.get("START BUTTON"), pressX, pressY)) {
             Object o = objects.get("START BUTTON");
 
             o.image = imageStock.get("2");
@@ -68,17 +74,18 @@ public class MainMenu {
     }
     private void clickFun() {
         System.out.print("screen clicked");
-        if (cursorHovering(objects.get("START BUTTON"))) {
+        if (hovering(objects.get("START BUTTON"), panel.curX, panel.curY)) {
             System.out.print("butt clicked");
+            visible = false;
         }
         System.out.println();
         click = false;
     }
 
-    private boolean cursorHovering(Object o) {
-        return panel.curX < o.x + o.w &&
-                panel.curX > o.x &&
-                panel.curY < o.y + o.h &&
-                panel.curY > o.y;
+    private boolean hovering(Object o, int x, int y) {
+        return x < o.x + o.w &&
+                x > o.x &&
+                y < o.y + o.h &&
+                y > o.y;
     }
 }
