@@ -11,7 +11,7 @@ public class Chaser extends Tile {
 
     Chaser(Panel panel, int x, int y) {
         super(panel, x, y, TileType.MOB);
-        this.size = panel.player.size;
+//        this.size = panel.player.size;
 
         grid = new int[radius * 2][radius * 2];
     }
@@ -37,7 +37,7 @@ public class Chaser extends Tile {
         int speed = 6;
 
         if ((Math.abs(x) % 50 <= speed && Math.abs(y) % 50 <= speed)) {
-            gridMaker();
+//            gridMaker();
             path = AStar.findPath(grid, radius, radius, px, py);
 
             System.out.println();
@@ -61,58 +61,58 @@ public class Chaser extends Tile {
 
         boolean xF = true, yF = true;
         gotoxy(x + xVel, y);
-        for (Tile tile : panel.tiles.get("PLAYGROUND")) {
-            if (tile != this && tile.solid && rectRect(tile.x - (float) tile.size/2, tile.y - (float) tile.size/2, tile.size, tile.size, x - (float) player.size/2, y - (float) player.size/2)) {
-                xF = false;
-                break;
-            }
-        }
-        gotoxy(x - xVel, y + yVel);
-        for (Tile tile : panel.tiles.get("PLAYGROUND")) {
-            if (tile != this && tile.solid && rectRect(tile.x - (float) tile.size/2, tile.y - (float) tile.size/2, tile.size, tile.size, x - (float) player.size/2, y - (float) player.size/2)) {
-                yF = false;
-                break;
-            }
-        }
+//        for (Tile tile : panel.tiles.get("PLAYGROUND")) {
+//            if (tile != this && tile.solid && rectRect(tile.x - (float) tile.size/2, tile.y - (float) tile.size/2, tile.size, tile.size, x - (float) player.size/2, y - (float) player.size/2)) {
+//                xF = false;
+//                break;
+//            }
+//        }
+//        gotoxy(x - xVel, y + yVel);
+//        for (Tile tile : panel.tiles.get("PLAYGROUND")) {
+//            if (tile != this && tile.solid && rectRect(tile.x - (float) tile.size/2, tile.y - (float) tile.size/2, tile.size, tile.size, x - (float) player.size/2, y - (float) player.size/2)) {
+//                yF = false;
+//                break;
+//            }
+//        }
         if (xF) gotoxy(x + xVel, y);
         if (!yF) gotoxy(x, y - yVel);
     }
 
-    public void gridMaker() {
-        for (int j = 0; j < radius * 2; j++) {
-            for (int i = 0; i < radius * 2; i++) {
-                boolean wallFlag = false;
-                for (Tile tile : panel.tiles.get("PLAYGROUND")) {
-                    if (tile.type == TileType.WALL && rectRect(
-                            tile.x - (float) tile.size/2, tile.y - (float) tile.size/2, tile.size, tile.size,
-                            x - radius * 50 + 50 * j - (float) size / 4,
-                            y - radius * 50 + 50 * i - (float) size / 4)) {
-                        wallFlag = true;
-                        break;
-                    }
-                }
-                grid[j][i] = wallFlag ? 1 : 0;
-
-                if (rectRect(
-                        lastPx - (float) player.size/2, lastPy - (float) player.size/2, player.size, player.size,
-                        x - radius * 50 + 50 * j - (float) size / 4,
-                        y - radius * 50 + 50 * i - (float) size / 4)) {
-                    px = j;
-                    py = i;
-                }
-                if (rectRect(
-                        player.x - (float) player.size/2, player.y - (float) player.size/2, player.size, player.size,
-                        x - radius * 50 + 50 * j - (float) size / 4,
-                        y - radius * 50 + 50 * i - (float) size / 4)) {
-                    px = j;
-                    py = i;
-                    lastPx = player.x;
-                    lastPy = player.y;
-//                    grid[i][j] = 2;
-                }
-            }
-        }
-    }
+//    public void gridMaker() {
+//        for (int j = 0; j < radius * 2; j++) {
+//            for (int i = 0; i < radius * 2; i++) {
+//                boolean wallFlag = false;
+//                for (Tile tile : panel.tiles.get("PLAYGROUND")) {
+//                    if (tile.type == TileType.WALL && rectRect(
+//                            tile.x - (float) tile.size/2, tile.y - (float) tile.size/2, tile.size, tile.size,
+//                            x - radius * 50 + 50 * j - (float) size / 4,
+//                            y - radius * 50 + 50 * i - (float) size / 4)) {
+//                        wallFlag = true;
+//                        break;
+//                    }
+//                }
+//                grid[j][i] = wallFlag ? 1 : 0;
+//
+//                if (rectRect(
+//                        lastPx - (float) player.size/2, lastPy - (float) player.size/2, player.size, player.size,
+//                        x - radius * 50 + 50 * j - (float) size / 4,
+//                        y - radius * 50 + 50 * i - (float) size / 4)) {
+//                    px = j;
+//                    py = i;
+//                }
+//                if (rectRect(
+//                        player.x - (float) player.size/2, player.y - (float) player.size/2, player.size, player.size,
+//                        x - radius * 50 + 50 * j - (float) size / 4,
+//                        y - radius * 50 + 50 * i - (float) size / 4)) {
+//                    px = j;
+//                    py = i;
+//                    lastPx = player.x;
+//                    lastPy = player.y;
+////                    grid[i][j] = 2;
+//                }
+//            }
+//        }
+//    }
 
     boolean rectRect(float r1x, float r1y, float r1w, float r1h, float r2x, float r2y) {
         float r2w = (float) size/2, r2h = (float) size/2;

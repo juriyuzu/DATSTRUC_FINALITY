@@ -15,7 +15,7 @@ public class Player extends Tile {
         camY = -panel.height/2;
         x = 50;
         y = 50;
-        size = (int) (panel.tileSize * 0.7);
+//        size = (int) (panel.tileSize * 0.7);
     }
 
     public void draw(Graphics2D gg) {
@@ -66,19 +66,19 @@ public class Player extends Tile {
 
         boolean xF = true, yF = true;
         gotoxy(x + xVel, y);
-        for (Tile tile : panel.tiles.get("PLAYGROUND")) {
-            if (tile != this && tile.solid && rectRect(tile.x - (float) tile.size/2, tile.y - (float) tile.size/2, tile.size, tile.size)) {
-                xF = false;
-                break;
-            }
-        }
-        gotoxy(x - xVel, y + yVel);
-        for (Tile tile : panel.tiles.get("PLAYGROUND")) {
-            if (tile != this && tile.solid && rectRect(tile.x - (float) tile.size/2, tile.y - (float) tile.size/2, tile.size, tile.size)) {
-                yF = false;
-                break;
-            }
-        }
+//        for (Tile tile : panel.tiles.get("PLAYGROUND")) {
+//            if (tile != this && tile.solid && rectRect(tile.x - (float) tile.size/2, tile.y - (float) tile.size/2, tile.size, tile.size)) {
+//                xF = false;
+//                break;
+//            }
+//        }
+//        gotoxy(x - xVel, y + yVel);
+//        for (Tile tile : panel.tiles.get("PLAYGROUND")) {
+//            if (tile != this && tile.solid && rectRect(tile.x - (float) tile.size/2, tile.y - (float) tile.size/2, tile.size, tile.size)) {
+//                yF = false;
+//                break;
+//            }
+//        }
         if (xF) gotoxy(x + xVel, y);
         if (!yF) gotoxy(x, y - yVel);
     }

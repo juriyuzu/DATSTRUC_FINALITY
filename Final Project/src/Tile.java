@@ -10,10 +10,10 @@ public class Tile {
 
     Tile(Panel panel, int x, int y, TileType type) {
         this.panel = panel;
-        player = panel.player;
+//        player = panel.player;
         this.x = x;
         this.y = y;
-        size = panel.tileSize;
+//        size = panel.tileSize;
         this.type = type;
         solid = type != TileType.FLOOR;
     }

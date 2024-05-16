@@ -64,13 +64,18 @@ public class MainMenu {
         
         gg.setColor(new Color(0x000000));
         gg.drawString(String.valueOf(press), 100, 100);
-        if (press && hovering(objects.get("START BUTTON"), pressX, pressY)) {
+        if (press && hovering(objects.get("START BUTTON"), panel.curX, panel.curY) && hovering(objects.get("START BUTTON"), pressX, pressY)) {
             // this runs only if the initially pressed location is hovering the start button
+            // and if the cursor is hovering the start button
             
             Object o = objects.get("START BUTTON");
 
             o.image = imageStock.get("2");
         } else {
+            // reset pressX and pressY so the code above will not run when the cursor is dragged out the button and back again
+            pressX = -1;
+            pressY = -1;
+
             Object o = objects.get("START BUTTON");
 
             o.image = imageStock.get("1");

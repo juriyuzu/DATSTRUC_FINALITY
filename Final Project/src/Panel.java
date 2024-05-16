@@ -9,16 +9,11 @@ import java.util.Random;
 
 public class Panel extends JPanel implements Runnable {
     Thread thread;
-    int tileSize;
     int width, height;
     Key key;
-    Save save;
     int fpsCounter, fps;
-    HashMap<String, LinkedList<Tile>> tiles;
-    LinkedList<Tile> layer;
-    Random random;
-    Player player;
     MainMenu mainMenu;
+    Game game;
     int curX, curY;
 
     Panel(Main main, int width, int height) {
@@ -29,10 +24,7 @@ public class Panel extends JPanel implements Runnable {
         thread = new Thread(this);
         thread.start();
 
-        tileSize = 50;
         key = new Key(main);
-        save = new Save();
-        random = new Random();
 
         fpsCounter = 0;
         Timer timer = new Timer(1000, e -> {
@@ -42,6 +34,7 @@ public class Panel extends JPanel implements Runnable {
         timer.start();
 
         mainMenu = new MainMenu(this);
+        game = new Game(this);
 
         addMouseMotionListener(new MouseMotionListener() {
             @Override
@@ -85,6 +78,7 @@ public class Panel extends JPanel implements Runnable {
         gg.fillRect(0, 0, width, height);
 
         mainMenu.draw(gg);
+        game.draw(gg);
 
         // debug
         {
@@ -96,26 +90,5 @@ public class Panel extends JPanel implements Runnable {
         }
 
         gg.dispose();
-    }
-
-    private void layerFun(Graphics2D gg) {
-        layer.clear();
-        layer.addAll(tiles.get("BACKGROUND"));
-        layer.sort(Comparator.comparingInt(Tile::getY));
-        for (Tile tile : layer) tile.draw(gg);
-
-        layer.clear();
-        layer.addAll(tiles.get("PLAYGROUND"));
-        layer.sort(Comparator.comparingInt(Tile::getY));
-        for (Tile tile : layer) tile.draw(gg);
-    }
-
-    public Tile getTileAt(int x, int y) {
-        for (Tile tile : tiles.get("BACKGROUND")) {
-            if (tile.x == x && tile.y == y) {
-                return tile;
-            }
-        }
-        return null; // Return null if no tile is found at the specified coordinates
     }
 }
