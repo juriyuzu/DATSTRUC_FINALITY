@@ -60,9 +60,13 @@ public class MainMenu {
     }
 
     private void pressFun(Graphics2D gg) {
+        // pressFun detects presses in the screen
+        
         gg.setColor(new Color(0x000000));
         gg.drawString(String.valueOf(press), 100, 100);
-        if (hovering(objects.get("START BUTTON"), panel.curX, panel.curY) && press && hovering(objects.get("START BUTTON"), pressX, pressY)) {
+        if (press && hovering(objects.get("START BUTTON"), pressX, pressY)) {
+            // this runs only if the initially pressed location is hovering the start button
+            
             Object o = objects.get("START BUTTON");
 
             o.image = imageStock.get("2");
@@ -72,7 +76,10 @@ public class MainMenu {
             o.image = imageStock.get("1");
         }
     }
+    
     private void clickFun() {
+        // clickFun runs when the screen is clicked
+        
         System.out.print("screen clicked");
         if (hovering(objects.get("START BUTTON"), panel.curX, panel.curY)) {
             System.out.print("butt clicked");
@@ -82,7 +89,7 @@ public class MainMenu {
         click = false;
     }
 
-    private boolean hovering(Object o, int x, int y) {
+    private boolean hovering(Object o, int x, int y) {        
         return x < o.x + o.w &&
                 x > o.x &&
                 y < o.y + o.h &&
