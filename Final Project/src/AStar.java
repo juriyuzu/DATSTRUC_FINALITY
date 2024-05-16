@@ -68,6 +68,59 @@ public class AStar {
 
         return null;
     }
+    static List<Node> findPath(int size, LinkedList<Tile> map, Object location) {
+        int radius = 10;
+        int[][] grid = new int[radius * 2][radius * 2];
+        int dx = 0, dy = 0;
+        LinkedList<Object> exits = new LinkedList<>();
+        for (Tile tile : map) if (tile.type == TileType.EXIT) exits.add(tile);
+
+        List<Node> minPath = null;
+        for (Object destination : exits) {
+            for (int j = 0; j < radius * 2; j++) {
+                for (int i = 0; i < radius * 2; i++) {
+                    boolean wallFlag = false;
+                    for (Tile tile : map) {
+                        if (tile.solid && rectRect(
+                                tile.x - (float) tile.size / 2, tile.y - (float) tile.size / 2, tile.size, tile.size,
+                                location.x - radius * size + size * j - (float) location.w / 4,
+                                location.y - radius * size + size * i - (float) location.h / 4,
+                                location.w, location.h)) {
+                            wallFlag = true;
+                            break;
+                        }
+                    }
+                    grid[j][i] = wallFlag ? 1 : 0;
+
+                    if (rectRect(
+                            destination.x - (float) destination.w / 2, destination.y - (float) destination.h / 2, destination.w, destination.h,
+                            location.x - radius * size + size * j - (float) location.w / 4,
+                            location.y - radius * size + size * i - (float) location.h / 4,
+                            location.w, location.h)) {
+                        dx = j;
+                        dy = i;
+//                    grid[i][j] = 2;
+                    }
+                }
+            }
+            List<Node> path = findPath(grid, radius, radius, dx, dy);
+            if (minPath == null) minPath = path;
+            else if (path != null && minPath.size() > path.size()) minPath = path;
+        }
+
+        for (int i = 0; i < grid.length; i++) {
+            for (int[] j : grid) System.out.print(j[i] + ", ");
+            System.out.println();
+        }
+        return minPath;
+    }
+
+    static boolean rectRect(float r1x, float r1y, float r1w, float r1h, float r2x, float r2y, float r2w, float r2h) {
+        return r1x + r1w >= r2x &&
+                r1x <= r2x + r2w &&
+                r1y + r1h >= r2y &&
+                r1y <= r2y + r2h;
+    }
 
     public static void main(String[] args) {
         int[][] grid = {

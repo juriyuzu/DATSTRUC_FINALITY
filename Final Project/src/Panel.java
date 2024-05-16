@@ -15,6 +15,7 @@ public class Panel extends JPanel implements Runnable {
     MainMenu mainMenu;
     Game game;
     int curX, curY;
+    int camX, camY;
 
     Panel(Main main, int width, int height) {
         this.width = width;
@@ -84,11 +85,23 @@ public class Panel extends JPanel implements Runnable {
         {
             gg.setFont(new Font("Consolas", Font.BOLD, 15));
             gg.setColor(new Color(0x000000));
-            gg.drawString(width + " " + height + " " + fps + " " + fpsCounter, width / 2, height / 2);
-            gg.drawString(curX + " " + curY, width / 2, height / 2 + 15);
-            gg.drawString(key.key.get("W") + " " + key.key.get("S"), width / 2, height / 2 + 30);
+            gg.drawString(width + " " + height + " " + fps + " " + fpsCounter, curX + 10, curY);
+            gg.drawString(curX + " " + curY, curX + 10, curY + 15);
         }
 
         gg.dispose();
     }
+
+    public void gotoxyCam(double x, double y) {
+        this.camX = (int) x;
+        this.camY = (int) y;
+    }
+
+    public boolean hovering(Object o, int x, int y) {
+        return x < o.x + o.w &&
+                x > o.x &&
+                y < o.y + o.h &&
+                y > o.y;
+    }
+
 }

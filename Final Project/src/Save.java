@@ -21,11 +21,47 @@ public class Save {
         }
     }
 
-    public LinkedList<String> read(String filePath) {
+//    public LinkedList<String> read(String filePath) {
+//        try {
+//            Path path = Paths.get(filePath);
+//            List<String> lines = Files.readAllLines(path);
+//            return new LinkedList<>(lines);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            System.out.println("Error reading the file.");
+//            return null;
+//        }
+//    }
+
+//    public int[][] read(String filePath) {
+//        try {
+//            Path path = Paths.get(filePath);
+//            List<String> lines = Files.readAllLines(path);
+//            int[][] result = new int[lines.size()][];
+//            for (int i = 0; i < lines.size(); i++) {
+//                String[] parts = lines.get(i).split("\\s+");
+//                result[i] = new int[parts.length];
+//                for (int j = 0; j < parts.length; j++) {
+//                    result[i][j] = Integer.parseInt(parts[j]);
+//                }
+//            }
+//            return result;
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            System.out.println("Error reading the file.");
+//            return null;
+//        }
+//    }
+
+    public char[][] read(String filePath) {
         try {
             Path path = Paths.get(filePath);
             List<String> lines = Files.readAllLines(path);
-            return new LinkedList<>(lines);
+            char[][] result = new char[lines.size()][];
+            for (int i = 0; i < lines.size(); i++) {
+                result[i] = lines.get(i).toCharArray();
+            }
+            return result;
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Error reading the file.");

@@ -1,31 +1,34 @@
+import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 
-public class Player extends Tile {
-    private final Key key;
-    private int camX, camY;
+public class Player extends Object {
+    Panel panel;
+    Game game;
     public double stamina = 1000;
+    int size;
 
-    Player(Panel panel) {
-        super(panel, 0, 0, TileType.PLAYER);
+    Player(Panel panel, Game game) {
+        super(new ImageIcon("").getImage(), 0, 0);
 
         this.panel = panel;
-        key = panel.key;
-        camX = -panel.width/2;
-        camY = -panel.height/2;
-        x = 50;
-        y = 50;
-//        size = (int) (panel.tileSize * 0.7);
+        this.game = game;
+        x = 3 * game.tileSize;
+        y = 3 * game.tileSize;
+        priority = 1;
+        size = (int) (game.tileSize * 0.7);
     }
 
-    public void draw(Graphics2D gg) {
-        gg.setColor(new Color(0xAD0000));
-        gg.fillRect(x - size/2 - camX, y - size*3/2 - camY, size, size*2);
+    public void draw(Graphics2D gg, int camX, int camY) {
+        int xOff = game.tileSize/2 - size/2 + camX;
+        int yOff = game.tileSize/2 - size/2 + camY;
+
+        gg.setColor(new Color(0xFF7A1313, true));
+        gg.fillRect(x + xOff, y + yOff - size, size, size);
         gg.setColor(new Color(0xFF0000));
-        gg.fillRect(x - size/2 - camX, y - size/2 - camY, size, size);
+        gg.fillRect(x + xOff, y + yOff, size, size);
 
         move(gg);
-        gotoxyCam(x - (double) panel.width /2, y - (double) panel.height /2);
     }
 
     public void gotoxy(double x, double y) {
@@ -33,54 +36,10 @@ public class Player extends Tile {
         this.y = (int) y;
     }
 
-    public void gotoxyCam(double x, double y) {
-        this.camX = (int) x;
-        this.camY = (int) y;
-    }
-
-    public int getXYCam(boolean getX) {
-        return getX ? camX : camY;
-    }
-
     private void move(Graphics2D gg) {
         int speed = 5;
-        if (key.key.get("SHIFT") && stamina > -10) {
-            if (stamina > 0) speed = 8;
-            stamina--;
-        }
-        else stamina = Math.min(1000, stamina + 0.5);
-        int xVel = 0;
-        int yVel = 0;
 
-        if (key.key.get("W")) yVel -= (int) speed;
-        if (key.key.get("S")) yVel += (int) speed;
-        if (key.key.get("A")) xVel -= (int) speed;
-        if (key.key.get("D")) xVel += (int) speed;
-        if ((key.key.get("W") || key.key.get("S")) && (key.key.get("A") || key.key.get("D"))) {
-            double length = Math.sqrt(xVel * xVel + yVel * yVel);
-            if (length != 0) {
-                xVel = (int) ((xVel / length) * speed);
-                yVel = (int) ((yVel / length) * speed);
-            }
-        }
-
-        boolean xF = true, yF = true;
-        gotoxy(x + xVel, y);
-//        for (Tile tile : panel.tiles.get("PLAYGROUND")) {
-//            if (tile != this && tile.solid && rectRect(tile.x - (float) tile.size/2, tile.y - (float) tile.size/2, tile.size, tile.size)) {
-//                xF = false;
-//                break;
-//            }
-//        }
-//        gotoxy(x - xVel, y + yVel);
-//        for (Tile tile : panel.tiles.get("PLAYGROUND")) {
-//            if (tile != this && tile.solid && rectRect(tile.x - (float) tile.size/2, tile.y - (float) tile.size/2, tile.size, tile.size)) {
-//                yF = false;
-//                break;
-//            }
-//        }
-        if (xF) gotoxy(x + xVel, y);
-        if (!yF) gotoxy(x, y - yVel);
+        gotoxy(panel.curX - panel.camX - (double) w/2 - (double) game.tileSize/2, panel.curY - panel.camY - (double) h/2 - (double) game.tileSize/2);
     }
 
     boolean rectRect(float r1x, float r1y, float r1w, float r1h) {

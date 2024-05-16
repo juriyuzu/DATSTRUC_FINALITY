@@ -53,7 +53,7 @@ public class MainMenu {
     public void draw(Graphics2D gg) {
         if (!visible) return;
 
-        for (HashMap.Entry<String, Object> entry : objects.entrySet()) entry.getValue().draw(gg);
+        for (HashMap.Entry<String, Object> entry : objects.entrySet()) entry.getValue().draw(gg, panel.camX, panel.camY);
 
         pressFun(gg);
         if (click) clickFun();
@@ -64,7 +64,7 @@ public class MainMenu {
         
         gg.setColor(new Color(0x000000));
         gg.drawString(String.valueOf(press), 100, 100);
-        if (press && hovering(objects.get("START BUTTON"), panel.curX, panel.curY) && hovering(objects.get("START BUTTON"), pressX, pressY)) {
+        if (press && panel.hovering(objects.get("START BUTTON"), panel.curX, panel.curY) && panel.hovering(objects.get("START BUTTON"), pressX, pressY)) {
             // this runs only if the initially pressed location is hovering the start button
             // and if the cursor is hovering the start button
             
@@ -86,18 +86,15 @@ public class MainMenu {
         // clickFun runs when the screen is clicked
         
         System.out.print("screen clicked");
-        if (hovering(objects.get("START BUTTON"), panel.curX, panel.curY)) {
+        if (panel.hovering(objects.get("START BUTTON"), panel.curX, panel.curY)) {
             System.out.print("butt clicked");
+
+            // turn off the mainMenu
             visible = false;
+            // turn on the game
+            panel.game.start();
         }
         System.out.println();
         click = false;
-    }
-
-    private boolean hovering(Object o, int x, int y) {        
-        return x < o.x + o.w &&
-                x > o.x &&
-                y < o.y + o.h &&
-                y > o.y;
     }
 }
