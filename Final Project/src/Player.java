@@ -37,9 +37,17 @@ public class Player extends Object {
     }
 
     private void move(Graphics2D gg) {
-        int speed = 5;
+        int speed = 3;
+        int xVel = 0;
+        int yVel = 0;
 
-        gotoxy(panel.curX - panel.camX - (double) w/2 - (double) game.tileSize/2, panel.curY - panel.camY - (double) h/2 - (double) game.tileSize/2);
+        if (game.path != null && game.path.size() > 1) {
+            xVel = (game.path.get(1).x - game.path.get(0).x) * speed;
+            yVel = (game.path.get(1).y - game.path.get(0).y) * speed;
+        }
+
+        gotoxy(x + xVel, y + yVel);
+//        gotoxy(panel.curX - panel.camX - (double) w/2 - (double) game.tileSize/2, panel.curY - panel.camY - (double) h/2 - (double) game.tileSize/2);
     }
 
     boolean rectRect(float r1x, float r1y, float r1w, float r1h) {

@@ -38,6 +38,14 @@ public class AStar {
 
             closedSet.add(current);
 
+
+            Random rnd = new Random();
+            for (int i = directions.length - 1; i > 0; i--) {
+                int index = rnd.nextInt(i + 1);
+                int[] temp = directions[index];
+                directions[index] = directions[i];
+                directions[i] = temp;
+            }
             for (int[] dir : directions) {
                 int newX = current.x + dir[0];
                 int newY = current.y + dir[1];

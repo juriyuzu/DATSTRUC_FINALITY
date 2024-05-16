@@ -35,7 +35,7 @@ public class Game {
 
         int mapsAmount = 2;
         maps = new LinkedList<>();
-        currentMap = 0;
+        currentMap = 1;
         for (int i = 0; i < mapsAmount; i++) {
             char[][] map = save.read("Final Project/save/floors/floor " + i + ".txt");
             maps.add(new LinkedList<>());
@@ -81,6 +81,7 @@ public class Game {
 
         layerFun(gg);
 
+        if (player.x % tileSize <= 5 && player.y % tileSize <= 5) path = AStar.findPath(tileSize, maps.get(currentMap), player);
         if (path != null) for (Node node : path)
             gg.drawImage(pathImage,
                     (player.x + tileSize/2) / tileSize * tileSize + (node.x - 10) * tileSize + panel.camX,
@@ -93,11 +94,6 @@ public class Game {
     private void clickFun() {
         Tile tile = getTileHovering();
         if (tile != null) tile.clickFun();
-
-        path = AStar.findPath(tileSize, maps.get(currentMap), player);
-        if (path != null) for (Node n : path) System.out.println(n.x + ", " + n.y);
-        else System.out.println("no path :(");
-        System.out.println();
 
         click = false;
     }

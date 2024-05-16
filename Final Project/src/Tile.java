@@ -27,12 +27,15 @@ public class Tile extends Object {
         this.type = type;
         solid = type == TileType.WALL;
         priority = 1;
+        blockOn = false;
+        clickFun();
         if (type == TileType.FLOOR) priority = 0;
 
         images = new HashMap<>();
         images.put("WALL TOP", new ImageIcon("Final Project/assets/game/tiles/wallTop.png").getImage());
         images.put("WALL FRONT", new ImageIcon("Final Project/assets/game/tiles/wallFront.png").getImage());
         images.put("FLOOR", new ImageIcon("Final Project/assets/game/tiles/floor.png").getImage());
+        images.put("BLOCK FLOOR", new ImageIcon("Final Project/assets/game/tiles/blockFloor.png").getImage());
         images.put("BLOCK TOP", new ImageIcon("Final Project/assets/game/tiles/blockTop.png").getImage());
         images.put("BLOCK FRONT", new ImageIcon("Final Project/assets/game/tiles/blockFront.png").getImage());
         images.put("EXIT", new ImageIcon("Final Project/assets/game/tiles/exit.png").getImage());
@@ -61,6 +64,6 @@ public class Tile extends Object {
         if (blockOn) {
             gg.drawImage(images.get("BLOCK TOP"), x + camX, y - size + camY, size, size, null);
             gg.drawImage(images.get("BLOCK FRONT"), x + camX, y + camY, size, size, null);
-        } else gg.drawImage(images.get("BLOCK TOP"), x + camX, y + camY, size, size, null);
+        } else gg.drawImage(images.get("BLOCK FLOOR"), x + camX, y + camY, size, size, null);
     }
 }
