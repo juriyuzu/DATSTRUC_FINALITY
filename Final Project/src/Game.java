@@ -13,13 +13,14 @@ public class Game {
     Random random;
     LinkedList<Object> layer;
     LinkedList<LinkedList<Tile>> maps;
+    LinkedList<LinkedList<Integer>> mapSizes;
     Player player;
     int tileSize;
     boolean visible;
     int currentMap;
     boolean click, press;
     int pressX, pressY;
-    List<Node> path;
+    List<Node> path, newPath;
     Image pathImage;
 
     Game(Panel panel) {
@@ -33,12 +34,17 @@ public class Game {
         player = new Player(panel, this);
         pathImage = new ImageIcon("Final Project/assets/game/tiles/path.png").getImage();
 
-        int mapsAmount = 2;
+        int mapsAmount = 3;
         maps = new LinkedList<>();
-        currentMap = 1;
+        mapSizes = new LinkedList<>();
+        currentMap = 0;
         for (int i = 0; i < mapsAmount; i++) {
             char[][] map = save.read("Final Project/save/floors/floor " + i + ".txt");
             maps.add(new LinkedList<>());
+
+            mapSizes.add(new LinkedList<>());
+            mapSizes.getLast().add(map[0].length);
+            mapSizes.getLast().add(map.length);
 
             for (int j = 0; j < map.length; j++) for (int k = 0; k < map[j].length; k++)
                 switch (map[j][k]) {
@@ -74,28 +80,52 @@ public class Game {
             public void mouseExited(MouseEvent e) {
             }
         });
+
+        updatePath();
     }
 
     public void draw(Graphics2D gg) {
         if (!visible) return;
 
-        layerFun(gg);
+        // draw the map
+        for (Tile tile : maps.get(currentMap)) tile.draw(gg, panel.camX, panel.camY);
 
-        if (player.x % tileSize <= 5 && player.y % tileSize <= 5) path = AStar.findPath(tileSize, maps.get(currentMap), player);
+        // draw the path
         if (path != null) for (Node node : path)
             gg.drawImage(pathImage,
-                    (player.x + tileSize/2) / tileSize * tileSize + (node.x - 10) * tileSize + panel.camX,
-                    (player.y + tileSize/2) / tileSize * tileSize + (node.y - 10) * tileSize + panel.camY,
+                    node.x * tileSize + panel.camX,
+                    node.y * tileSize + panel.camY,
                     tileSize, tileSize, null);
+
+        // draw the player
+        player.draw(gg, panel.camX, panel.camY);
 
         if (click) clickFun();
     }
 
     private void clickFun() {
         Tile tile = getTileHovering();
-        if (tile != null) tile.clickFun();
+        if (tile != null) {
+            tile.clickFun(player);
+            if (tile.type == TileType.BLOCK) updatePath();
+        }
+
 
         click = false;
+    }
+
+    public void updatePath() {
+        newPath = AStar.findPath(tileSize, maps.get(currentMap), player, mapSizes.get(currentMap));
+        if (path != newPath) {
+//            if (path != null && newPath != null) {
+//                if (path.getLast() != newPath.getLast()) {
+                    path = newPath;
+                    player.toNearestTile = true;
+//                }
+//            }
+//            else path = newPath;
+            player.pathIndex = 1;
+        }
     }
 
     private void layerFun(Graphics2D gg) {

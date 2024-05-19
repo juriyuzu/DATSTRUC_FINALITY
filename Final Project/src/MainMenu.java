@@ -20,7 +20,7 @@ public class MainMenu {
         imageStock.put("2", new ImageIcon("Final Project/assets/mainMenu/my beloved2.png").getImage());
 
         objects = new HashMap<>();
-        objects.put("START BUTTON", new Object(imageStock.get("1"), panel.width/2, panel.height/2 + 100, 100, 100));
+        objects.put("START BUTTON", new Object(imageStock.get("1"), panel.width/2, panel.height/2 + 250, 100, 100));
 
         panel.addMouseListener(new MouseListener() {
             @Override

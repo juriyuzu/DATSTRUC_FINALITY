@@ -8,7 +8,7 @@ public class Tile extends Object {
     Panel panel;
     Game game;
     TileType type;
-    boolean solid;
+    boolean solid = true;
     int size;
     HashMap<String, Image> images;
     boolean blockOn;
@@ -25,45 +25,36 @@ public class Tile extends Object {
         this.y = y;
         size = game.tileSize;
         this.type = type;
-        solid = type == TileType.WALL;
+        solid = type == TileType.WALL || type == TileType.BLOCK ;
         priority = 1;
-        blockOn = false;
-        clickFun();
+        blockOn = type == TileType.BLOCK;
         if (type == TileType.FLOOR) priority = 0;
 
         images = new HashMap<>();
-        images.put("WALL TOP", new ImageIcon("Final Project/assets/game/tiles/wallTop.png").getImage());
-        images.put("WALL FRONT", new ImageIcon("Final Project/assets/game/tiles/wallFront.png").getImage());
+        images.put("WALL", new ImageIcon("Final Project/assets/game/tiles/wall.png").getImage());
         images.put("FLOOR", new ImageIcon("Final Project/assets/game/tiles/floor.png").getImage());
         images.put("BLOCK FLOOR", new ImageIcon("Final Project/assets/game/tiles/blockFloor.png").getImage());
-        images.put("BLOCK TOP", new ImageIcon("Final Project/assets/game/tiles/blockTop.png").getImage());
-        images.put("BLOCK FRONT", new ImageIcon("Final Project/assets/game/tiles/blockFront.png").getImage());
+        images.put("BLOCK WALL", new ImageIcon("Final Project/assets/game/tiles/blockWall.png").getImage());
         images.put("EXIT", new ImageIcon("Final Project/assets/game/tiles/exit.png").getImage());
     }
 
     public void draw(Graphics2D gg, int camX, int camY) {
         switch (type) {
-            case WALL -> {
-                gg.drawImage(images.get("WALL TOP"), x + camX, y - size + camY, size, size, null);
-                gg.drawImage(images.get("WALL FRONT"), x + camX, y+ camY, size, size, null);
-            }
+            case WALL -> gg.drawImage(images.get("WALL"), x + camX, y+ camY, size, size, null);
             case FLOOR -> gg.drawImage(images.get("FLOOR"), x + camX, y + camY, size, size, null);
             case BLOCK -> drawBlock(gg, camX, camY);
             case EXIT -> gg.drawImage(images.get("EXIT"), x + camX, y + camY, size, size, null);
-        }
-    }
+    }}
 
-    public void clickFun() {
-        if (type == TileType.BLOCK) {
+    public void clickFun(Player player) {
+        if (type == TileType.BLOCK && !player.rectRect(x - (float) w/2, y - (float) h/2, size, size)) {
             blockOn = !blockOn;
             solid = blockOn;
         }
     }
 
     private void drawBlock(Graphics2D gg, int camX, int camY) {
-        if (blockOn) {
-            gg.drawImage(images.get("BLOCK TOP"), x + camX, y - size + camY, size, size, null);
-            gg.drawImage(images.get("BLOCK FRONT"), x + camX, y + camY, size, size, null);
-        } else gg.drawImage(images.get("BLOCK FLOOR"), x + camX, y + camY, size, size, null);
+        if (blockOn) gg.drawImage(images.get("BLOCK WALL"), x + camX, y + camY, size, size, null);
+        else gg.drawImage(images.get("BLOCK FLOOR"), x + camX, y + camY, size, size, null);
     }
 }

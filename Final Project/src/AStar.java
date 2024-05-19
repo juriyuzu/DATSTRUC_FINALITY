@@ -76,23 +76,24 @@ public class AStar {
 
         return null;
     }
-    static List<Node> findPath(int size, LinkedList<Tile> map, Object location) {
-        int radius = 10;
-        int[][] grid = new int[radius * 2][radius * 2];
-        int dx = 0, dy = 0;
+    static List<Node> findPath(int size, LinkedList<Tile> map, Object location, LinkedList<Integer> mapSizes) {
+        int w = mapSizes.getFirst();
+        int h = mapSizes.getLast();
+        int[][] grid = new int[h][w];
+        int lx = -1, ly = -1, dx = -1, dy = -1;
         LinkedList<Object> exits = new LinkedList<>();
         for (Tile tile : map) if (tile.type == TileType.EXIT) exits.add(tile);
 
         List<Node> minPath = null;
         for (Object destination : exits) {
-            for (int j = 0; j < radius * 2; j++) {
-                for (int i = 0; i < radius * 2; i++) {
+            for (int j = 0; j < h; j++) {
+                for (int i = 0; i < w; i++) {
                     boolean wallFlag = false;
                     for (Tile tile : map) {
                         if (tile.solid && rectRect(
                                 tile.x - (float) tile.size / 2, tile.y - (float) tile.size / 2, tile.size, tile.size,
-                                location.x - radius * size + size * j - (float) location.w / 4,
-                                location.y - radius * size + size * i - (float) location.h / 4,
+                                size * j - (float) location.w / 4,
+                                size * i - (float) location.h / 4,
                                 location.w, location.h)) {
                             wallFlag = true;
                             break;
@@ -101,17 +102,23 @@ public class AStar {
                     grid[j][i] = wallFlag ? 1 : 0;
 
                     if (rectRect(
-                            destination.x - (float) destination.w / 2, destination.y - (float) destination.h / 2, destination.w, destination.h,
-                            location.x - radius * size + size * j - (float) location.w / 4,
-                            location.y - radius * size + size * i - (float) location.h / 4,
-                            location.w, location.h)) {
+                            destination.x, destination.y, (float) destination.w/2, (float) destination.h/2,
+                            size * j, size * i, size, size)) {
                         dx = j;
                         dy = i;
-//                    grid[i][j] = 2;
+                    }
+
+                    if (rectRect(
+                            location.x + (float) size/2 - (float) location.w/2, location.y + (float) size/2 - (float) location.h/2, location.w, location.h,
+                            size * j, size * i, size, size)) {
+                        lx = j;
+                        ly = i;
                     }
                 }
             }
-            List<Node> path = findPath(grid, radius, radius, dx, dy);
+            System.out.println(lx + " " + ly + " " + dx + " " + dy);
+            if (lx == -1 || ly == -1 || dx == -1 || dy == -1) return null;
+            List<Node> path = findPath(grid, lx, ly, dx, dy);
             if (minPath == null) minPath = path;
             else if (path != null && minPath.size() > path.size()) minPath = path;
         }
@@ -120,6 +127,8 @@ public class AStar {
             for (int[] j : grid) System.out.print(j[i] + ", ");
             System.out.println();
         }
+        if (minPath != null) for (Node node : minPath) System.out.println(node.x + " " + node.y);
+
         return minPath;
     }
 
